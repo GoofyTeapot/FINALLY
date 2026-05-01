@@ -86,6 +86,24 @@ function drawConfetti() {
     requestAnimationFrame(drawConfetti);
 }
 
+function updateClock() {
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    // pad with zeros
+    if (minutes < 10) minutes = "0" + minutes;
+    if (seconds < 10) seconds = "0" + seconds;
+
+    document.getElementById("live-clock").textContent =
+        hours + ":" + minutes + ":" + seconds;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
 drawConfetti();
 updateCountdown();
 setInterval(updateCountdown, 1000);
