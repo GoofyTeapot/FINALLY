@@ -11,8 +11,8 @@ function getNextBirthday(month, day) {
     return birthday;
 }
 
-// FILL THESE IN:
-const birthday = getNextBirthday(/* month */ ?, /* day */ ?);
+// Noah's birthday: May 4
+const birthday = getNextBirthday(5, 4);
 
 function updateCountdown() {
     const now = new Date();
