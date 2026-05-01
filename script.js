@@ -40,5 +40,52 @@ function updateCountdown() {
         seconds + " sec";
 }
 
+// ----------------------
+// CONFETTI ENGINE
+// ----------------------
+const confettiCanvas = document.getElementById("confetti-canvas");
+const ctx = confettiCanvas.getContext("2d");
+
+function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+const confettiPieces = [];
+const colors = ["#ff4d4d", "#4da6ff", "#ffd11a", "#66ff99", "#ff66cc"];
+
+for (let i = 0; i < 150; i++) {
+    confettiPieces.push({
+        x: Math.random() * confettiCanvas.width,
+        y: Math.random() * confettiCanvas.height,
+        size: Math.random() * 6 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        speed: Math.random() * 2 + 1,
+        drift: Math.random() * 1 - 0.5
+    });
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confettiPieces.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+
+        p.y += p.speed;
+        p.x += p.drift;
+
+        if (p.y > confettiCanvas.height) {
+            p.y = -10;
+            p.x = Math.random() * confettiCanvas.width;
+        }
+    });
+
+    requestAnimationFrame(drawConfetti);
+}
+
+drawConfetti();
 updateCountdown();
 setInterval(updateCountdown, 1000);
