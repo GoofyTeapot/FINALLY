@@ -6,21 +6,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="container">
         <img src="img/face.png" class="face" alt="Noah Face">
-        <h1 class="title">Countdown to Noah's Birthday</h1>
 
-        <div id="countdown-days" class="countdown-days"></div>
-        <div id="countdown-hms" class="countdown-hms"></div>
-    </div>
-
-    <div class="container">
-    <!-- Your existing countdown content goes here -->
-    <img src="img/face.png" class="face">
-    <div id="countdown">
-        <div id="days"></div>
-        <div id="time"></div>
-    </div>
+        <div id="countdown">
+            <div id="days"></div>
+            <div id="time"></div>
+        </div>
     </div>
 
     <!-- Live Clock -->
@@ -33,14 +26,14 @@
     <div id="day-progress">
         <div id="day-progress-fill"></div>
     </div>
-    
+
     <!-- Sparkles Background -->
     <div id="sparkles"></div>
 
     <!-- Progress Ring Around DAYS -->
     <div id="days-ring">
         <svg id="ring-svg" width="160" height="160">
-             <circle id="ring-bg" cx="80" cy="80" r="70"></circle>
+            <circle id="ring-bg" cx="80" cy="80" r="70"></circle>
             <circle id="ring-progress" cx="80" cy="80" r="70"></circle>
         </svg>
     </div>
@@ -48,7 +41,6 @@
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Your script -->
     <script src="script.js"></script>
 </body>
 </html>
