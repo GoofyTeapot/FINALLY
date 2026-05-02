@@ -1,8 +1,52 @@
 /* ============================
+   CONFETTI (simple version)
+============================ */
+
+let confettiPieces = []; // MUST be first
+
+const canvas = document.getElementById("confetti-canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function startConfetti() {
+    for (let i = 0; i < 150; i++) {
+        confettiPieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            size: Math.random() * 6 + 4,
+            speed: Math.random() * 3 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+    }
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    confettiPieces.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+
+        p.y += p.speed;
+
+        if (p.y > canvas.height) {
+            p.y = -10;
+        }
+    });
+
+    requestAnimationFrame(drawConfetti);
+}
+
+drawConfetti();
+
+
+/* ============================
    COUNTDOWN TO BIRTHDAY
 ============================ */
 
-const birthday = new Date("2026-05-01T00:00:00"); // <-- change if needed
+const birthday = new Date("2026-05-04T00:00:00"); // <-- adjust if needed
 
 function updateCountdown() {
     const now = new Date();
@@ -117,47 +161,3 @@ function updateRing(daysLeft) {
 
     document.getElementById("ring-progress").style.strokeDashoffset = offset;
 }
-
-
-/* ============================
-   CONFETTI (simple version)
-============================ */
-
-const canvas = document.getElementById("confetti-canvas");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let confettiPieces = [];
-
-function startConfetti() {
-    for (let i = 0; i < 150; i++) {
-        confettiPieces.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height - canvas.height,
-            size: Math.random() * 6 + 4,
-            speed: Math.random() * 3 + 2,
-            color: `hsl(${Math.random() * 360}, 100%, 50%)`
-        });
-    }
-}
-
-function drawConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    confettiPieces.forEach((p) => {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-
-        p.y += p.speed;
-
-        if (p.y > canvas.height) {
-            p.y = -10;
-        }
-    });
-
-    requestAnimationFrame(drawConfetti);
-}
-
-drawConfetti();
