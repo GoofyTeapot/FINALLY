@@ -1,109 +1,163 @@
-function getNextBirthday(month, day) {
-    const now = new Date();
-    let year = now.getFullYear();
+/* ============================
+   COUNTDOWN TO BIRTHDAY
+============================ */
 
-    let birthday = new Date(year, month - 1, day);
-
-    if (birthday < now) {
-        birthday = new Date(year + 1, month - 1, day);
-    }
-
-    return birthday;
-}
-
-// Noah's birthday: May 4
-const birthday = getNextBirthday(5, 4);
+const birthday = new Date("2026-05-01T00:00:00"); // <-- change if needed
 
 function updateCountdown() {
     const now = new Date();
     const diff = birthday - now;
 
     if (diff <= 0) {
-        document.getElementById("countdown-days").textContent = "0 Days";
-        document.getElementById("countdown-hms").textContent = "0 hr 0 min 0 sec";
+        document.getElementById("days").textContent = "🎉";
+        document.getElementById("time").textContent = "HAPPY BIRTHDAY NOAH!";
+        startConfetti();
         return;
     }
 
-    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
 
-    const days = Math.floor(totalSeconds / (60 * 60 * 24));
-    const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
-    const seconds = totalSeconds % 60;
+    document.getElementById("days").textContent = days;
+    document.getElementById("time").textContent =
+        hours + "h " + minutes + "m " + seconds + "s";
 
-    document.getElementById("countdown-days").textContent =
-        days + " Days";
-
-    document.getElementById("countdown-hms").textContent =
-        hours + " hr " +
-        minutes + " min " +
-        seconds + " sec";
+    updateRing(days);
 }
 
-// ----------------------
-// CONFETTI ENGINE
-// ----------------------
-const confettiCanvas = document.getElementById("confetti-canvas");
-const ctx = confettiCanvas.getContext("2d");
+setInterval(updateCountdown, 1000);
+updateCountdown();
 
-function resizeCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
+
+/* ============================
+   LIVE CLOCK
+============================ */
+
+function updateClock() {
+    const now = new Date();
+
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let s = now.getSeconds();
+
+    if (m < 10) m = "0" + m;
+    if (s < 10) s = "0" + s;
+
+    document.getElementById("live-clock").textContent = h + ":" + m + ":" + s;
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
-const confettiPieces = [];
-const colors = ["#ff4d4d", "#4da6ff", "#ffd11a", "#66ff99", "#ff66cc"];
+setInterval(updateClock, 1000);
+updateClock();
 
-for (let i = 0; i < 150; i++) {
-    confettiPieces.push({
-        x: Math.random() * confettiCanvas.width,
-        y: Math.random() * confettiCanvas.height,
-        size: Math.random() * 6 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        speed: Math.random() * 2 + 1,
-        drift: Math.random() * 1 - 0.5
-    });
+
+/* ============================
+   LIVE DATE
+============================ */
+
+function updateDate() {
+    const now = new Date();
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    document.getElementById("live-date").textContent =
+        now.toLocaleDateString(undefined, options);
+}
+
+updateDate();
+
+
+/* ============================
+   DAILY PROGRESS BAR
+============================ */
+
+function updateDayProgress() {
+    const now = new Date();
+    const secondsToday =
+        now.getHours() * 3600 +
+        now.getMinutes() * 60 +
+        now.getSeconds();
+
+    const percent = (secondsToday / 86400) * 100;
+    document.getElementById("day-progress-fill").style.width = percent + "%";
+}
+
+setInterval(updateDayProgress, 1000);
+updateDayProgress();
+
+
+/* ============================
+   SPARKLES (subtle background)
+============================ */
+
+function createSparkle() {
+    const sparkle = document.createElement("div");
+    sparkle.classList.add("sparkle");
+
+    sparkle.style.left = Math.random() * 100 + "vw";
+    sparkle.style.top = Math.random() * 100 + "vh";
+    sparkle.style.opacity = Math.random();
+
+    document.getElementById("sparkles").appendChild(sparkle);
+
+    setTimeout(() => sparkle.remove(), 3000);
+}
+
+setInterval(createSparkle, 400);
+
+
+/* ============================
+   PROGRESS RING AROUND DAYS
+============================ */
+
+function updateRing(daysLeft) {
+    const totalDays = 365;
+    const percent = ((totalDays - daysLeft) / totalDays);
+    const circumference = 440;
+    const offset = circumference - (percent * circumference);
+
+    document.getElementById("ring-progress").style.strokeDashoffset = offset;
+}
+
+
+/* ============================
+   CONFETTI (simple version)
+============================ */
+
+const canvas = document.getElementById("confetti-canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confettiPieces = [];
+
+function startConfetti() {
+    for (let i = 0; i < 150; i++) {
+        confettiPieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            size: Math.random() * 6 + 4,
+            speed: Math.random() * 3 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+    }
 }
 
 function drawConfetti() {
-    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    confettiPieces.forEach(p => {
+    confettiPieces.forEach((p) => {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, p.size, p.size);
 
         p.y += p.speed;
-        p.x += p.drift;
 
-        if (p.y > confettiCanvas.height) {
+        if (p.y > canvas.height) {
             p.y = -10;
-            p.x = Math.random() * confettiCanvas.width;
         }
     });
 
     requestAnimationFrame(drawConfetti);
 }
 
-function updateClock() {
-    const now = new Date();
-
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
-
-    // pad with zeros
-    if (minutes < 10) minutes = "0" + minutes;
-    if (seconds < 10) seconds = "0" + seconds;
-
-    document.getElementById("live-clock").textContent =
-        hours + ":" + minutes + ":" + seconds;
-}
-
-updateClock();
-setInterval(updateClock, 1000);
-
 drawConfetti();
-updateCountdown();
-setInterval(updateCountdown, 1000);
